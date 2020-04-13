@@ -10,7 +10,7 @@ import Foundation
 import CoreMIDI
 
 
-protocol SBVirtualMidiDeviceDelegate {
+public protocol SBVirtualMidiDeviceDelegate {
     
     func receivedNoteOff(channel: UInt8, note: UInt8, velocity: UInt8)
     func receivedNoteOn(channel: UInt8, note: UInt8, velocity: UInt8)
