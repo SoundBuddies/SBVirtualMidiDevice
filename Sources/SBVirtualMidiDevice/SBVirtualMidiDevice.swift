@@ -30,7 +30,7 @@ public protocol SBVirtualMidiDeviceDelegate {
     ///      for byte in data {
     ///      print("\(byte) ")
     ///      }
-    ///      print("length: \(length")
+    ///      print("length: \(length)")
     ///
     func logIncomingRawMidiData(data: [UInt8], length: Int)
 }
@@ -48,7 +48,7 @@ public class SBVirtualMidiDevice {
     
     let midiChannelRange: ClosedRange<UInt8> = 1...16
     
-    var delegate: SBVirtualMidiDeviceDelegate?
+    public var delegate: SBVirtualMidiDeviceDelegate?
     var theMidiClient: MIDIClientRef = 0
     
     var midiOut: MIDIEndpointRef = 0
