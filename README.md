@@ -1,14 +1,14 @@
 # SBVirtualMidiDevice
 
-This is a simple Swift package for creating a virtual midi device in macOS. This should als work for iOS but has not yet been tested. The usage is straight forward. Create an instance of the class, optionally name your virtual midi device with init(_ name:). Use the delegate protocol to receive and process incoming midi messages. 
+This is a simple Swift package for creating a virtual midi device in macOS. This should also work for iOS but has not yet been tested. The usage is straight forward. Create an instance of the class, optionally use init(_ name:) to give your virtual midi device a custom name. Use the delegate protocol to receive and process incoming midi messages. 
 
 Here is an example:
 
-In 'AppDelegate'
+In "AppDelegate"
 
     let midi = SBVirtualMidiDevice("MyMidi")
  
-to receive Midi data, you have to adopt the SBVirtualMidiDeviceDelegate protocol, eg
+ to receive Midi data, you have to adopt the SBVirtualMidiDeviceDelegate protocol
 
     extension AppDelegate: SBVirtualMidiDeviceDelegate {
         func receivedNoteOff(channel: UInt8, note: UInt8, velocity: UInt8) {
@@ -55,14 +55,19 @@ to receive Midi data, you have to adopt the SBVirtualMidiDeviceDelegate protocol
     }
  
  
-In 'func applicationDidFinishLaunching(_ aNotification: Notification)'
+In "func applicationDidFinishLaunching(_ aNotification: Notification)"
 
     midi.delegate = self
     
     
-To send midi data, use the public send methods, eg
+To send midi data, use the public send methods
 
     midi.sendNoteOn(1, 64, 127)
     midi.sendNoteOff(1, 64, 0)
     midi.sendSysEx([0xF0, 0x01, 0x02, 0x03, 0xF7])
     
+
+I recommend to use the Swift Packet Manager under Xcode 11 to embed the source code. But you can also copy the single .swift source file directly into your project.
+
+
+Have fun!
