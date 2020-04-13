@@ -26,11 +26,11 @@ public protocol SBVirtualMidiDeviceDelegate {
     ///
     /// example:
     ///
-    ///      print("MIDI received: ")
-    ///      for byte in data {
-    ///      print("\(byte) ")
-    ///      }
-    ///      print("length: \(length)")
+    ///     var msg: String = ""
+    ///     for byte in data {
+    ///     msg.append(String(format: "%02X", byte) + " ")
+    ///     }
+    ///     print("MIDI received: \(msg) length: \(length)")
     ///
     func logIncomingRawMidiData(data: [UInt8], length: Int)
 }
