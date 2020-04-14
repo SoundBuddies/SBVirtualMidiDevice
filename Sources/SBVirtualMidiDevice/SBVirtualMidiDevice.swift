@@ -36,7 +36,7 @@ public protocol SBVirtualMidiDeviceDelegate {
 }
 
 /// contains optional methods which doesn't need to be implemented
-extension SBVirtualMidiDeviceDelegate {
+public extension SBVirtualMidiDeviceDelegate {
     
    
     func logIncomingRawMidiData(data: [UInt8], length: Int) {
