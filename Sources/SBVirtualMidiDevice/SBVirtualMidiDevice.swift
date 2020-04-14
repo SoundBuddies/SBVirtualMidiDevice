@@ -118,7 +118,7 @@ public class SBVirtualMidiDevice {
     public func sendControlChange(_ channel: UInt8, _ controller: UInt8, _ value: UInt8) {
         guard midiChannelRange.contains(channel) else { return }
         guard midiValueRange.contains(controller) else { return }
-        guard midiValueRange.contains(velocity) else { return }
+        guard midiValueRange.contains(value) else { return }
         sendRawMidiMessage(0xB0 + (channel - 1), controller, value)
     }
     
