@@ -47,6 +47,7 @@ extension SBVirtualMidiDeviceDelegate {
 public class SBVirtualMidiDevice {
     
     let midiChannelRange: ClosedRange<UInt8> = 1...16
+    let midiValueRange: ClosedRange<UInt8> = 0...127
     
     public var delegate: SBVirtualMidiDeviceDelegate?
     var theMidiClient: MIDIClientRef = 0
@@ -95,37 +96,49 @@ public class SBVirtualMidiDevice {
     public func sendNoteOff(_ channel: UInt8, _ note: UInt8, _ velocity: UInt8) {
 //        if midiChannelRange.contains(channel) { sendRawMidiMessage(0x80 + (channel - 1), note, velocity) }
         guard midiChannelRange.contains(channel) else { return }
+        guard midiValueRange.contains(note) else { return }
+        guard midiValueRange.contains(velocity) else { return }
         sendRawMidiMessage(0x80 + (channel - 1), note, velocity)
     }
     
     public func sendNoteOn(_ channel: UInt8, _ note: UInt8, _ velocity: UInt8) {
         guard midiChannelRange.contains(channel) else { return }
+        guard midiValueRange.contains(note) else { return }
+        guard midiValueRange.contains(velocity) else { return }
         sendRawMidiMessage(0x90 + (channel - 1), note, velocity)
     }
 
     public func sendPolyAftertouch(_ channel: UInt8, _ note: UInt8, _ value: UInt8) {
         guard midiChannelRange.contains(channel) else { return }
+        guard midiValueRange.contains(note) else { return }
+        guard midiValueRange.contains(value) else { return }
         sendRawMidiMessage(0xA0 + (channel - 1), note, value)
     }
 
     public func sendControlChange(_ channel: UInt8, _ controller: UInt8, _ value: UInt8) {
         guard midiChannelRange.contains(channel) else { return }
+        guard midiValueRange.contains(controller) else { return }
+        guard midiValueRange.contains(velocity) else { return }
         sendRawMidiMessage(0xB0 + (channel - 1), controller, value)
     }
     
     public func sendProgramChange(_ channel: UInt8, _ program: UInt8) {
         guard midiChannelRange.contains(channel) else { return }
+        guard midiValueRange.contains(program) else { return }
         sendRawMidiMessage(0xC0 + (channel - 1), program)
     }
     
     public func sendMonoAftertouch(_ channel: UInt8, _ value: UInt8) {
         guard midiChannelRange.contains(channel) else { return }
+        guard midiValueRange.contains(value) else { return }
         sendRawMidiMessage(0xD0 + (channel - 1), value)
     }
     
     
     public func sendPitchbend(_ channel: UInt8, _ data1: UInt8, _ data2: UInt8) {
         guard midiChannelRange.contains(channel) else { return }
+        guard midiValueRange.contains(data1) else { return }
+        guard midiValueRange.contains(data2) else { return }
         sendRawMidiMessage(0xE0 + (channel - 1), data1, data2)
     }
     
