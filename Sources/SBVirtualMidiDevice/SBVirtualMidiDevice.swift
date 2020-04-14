@@ -38,10 +38,8 @@ public protocol SBVirtualMidiDeviceDelegate {
 /// contains optional methods which doesn't need to be implemented
 public extension SBVirtualMidiDeviceDelegate {
     
-   
-    func logIncomingRawMidiData(data: [UInt8], length: Int) {
-        
-    }
+    func logIncomingRawMidiData(data: [UInt8], length: Int) { }
+    
 }
 
 public class SBVirtualMidiDevice {
@@ -200,29 +198,31 @@ public class SBVirtualMidiDevice {
             
             delegate?.logIncomingRawMidiData(data: midiMsgArray, length: midiMsgArray.count)
             
-            switch midiMsgArray[0] {
-            case 0x80:
+            let msgType = midiMsgArray[0] / 0x10
+            
+            switch msgType {
+            case 0x8:
                 let channel = (midiMsgArray[0] % 0x80) + 1
                 delegate?.receivedNoteOff(channel: channel, note: midiMsgArray[1], velocity: midiMsgArray[2])
-            case 0x90:
+            case 0x9:
                 let channel = (midiMsgArray[0] % 0x90) + 1
                 delegate?.receivedNoteOn(channel: channel, note: midiMsgArray[1], velocity: midiMsgArray[2])
-            case 0xA0:
+            case 0xA:
                 let channel = (midiMsgArray[0] % 0xA0) + 1
                 delegate?.receivedPolyAftertouch(channel: channel, note: midiMsgArray[1], pressure: midiMsgArray[2])
-            case 0xB0:
+            case 0xB:
                 let channel = (midiMsgArray[0] % 0xB0) + 1
                 delegate?.receivedControlChange(channel: channel, controller: midiMsgArray[1], value: midiMsgArray[2])
-            case 0xC0:
+            case 0xC:
                 let channel = (midiMsgArray[0] % 0xC0) + 1
                 delegate?.receivedProgramChange(channel: channel, program: midiMsgArray[1])
-            case 0xD0:
+            case 0xD:
                 let channel = (midiMsgArray[0] % 0xD0) + 1
                 delegate?.receivedMonoAftertouch(channel: channel, pressure: midiMsgArray[1])
-            case 0xE0:
+            case 0xE:
                 let channel = (midiMsgArray[0] % 0xE0) + 1
                 delegate?.receivedPitchbend(channel: channel, data1: midiMsgArray[1], data2: midiMsgArray[2])
-            case 0xF0:
+            case 0xF:
                 delegate?.receivedSysEx(data: midiMsgArray, length: midiMsgArray.count)
             default:
                 break
