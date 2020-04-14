@@ -74,14 +74,17 @@ public class SBVirtualMidiDevice {
     
     
     
-    public func sendRawMidiMessage(_ statusByte:UInt8, _ dataByte1: UInt8, _ dataByte2: UInt8) {
+    public func sendRawMidiMessage(_ statusByte:UInt8, _ dataByte1: UInt8, _ dataByte2: UInt8? = nil) {
         
         var midiPacket = MIDIPacket()
         midiPacket.timeStamp = 0
-        midiPacket.length = 3
+        midiPacket.length = dataByte2 != nil ? 3 : 2
         midiPacket.data.0 = statusByte
         midiPacket.data.1 = dataByte1
-        midiPacket.data.2 = dataByte2
+        
+        if dataByte2 != nil {
+        midiPacket.data.2 = dataByte2!
+        }
         
         var packetList = MIDIPacketList(numPackets: 1, packet: midiPacket)
         MIDIReceived(midiOut, &packetList)
@@ -90,7 +93,9 @@ public class SBVirtualMidiDevice {
     
     
     public func sendNoteOff(_ channel: UInt8, _ note: UInt8, _ velocity: UInt8) {
-        if midiChannelRange.contains(channel) { sendRawMidiMessage(0x80 + (channel - 1), note, velocity) }
+//        if midiChannelRange.contains(channel) { sendRawMidiMessage(0x80 + (channel - 1), note, velocity) }
+        guard midiChannelRange.contains(channel) else { return }
+        sendRawMidiMessage(0x80 + (channel - 1), note, velocity)
     }
     
     public func sendNoteOn(_ channel: UInt8, _ note: UInt8, _ velocity: UInt8) {
