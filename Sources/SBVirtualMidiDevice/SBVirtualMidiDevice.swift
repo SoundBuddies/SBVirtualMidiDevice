@@ -99,46 +99,34 @@ public class SBVirtualMidiDevice {
     }
     
     public func sendNoteOn(_ channel: UInt8, _ note: UInt8, _ velocity: UInt8) {
-        if midiChannelRange.contains(channel) { sendRawMidiMessage(0x90 + (channel - 1), note, velocity) }
+        guard midiChannelRange.contains(channel) else { return }
+        sendRawMidiMessage(0x90 + (channel - 1), note, velocity)
     }
 
     public func sendPolyAftertouch(_ channel: UInt8, _ note: UInt8, _ value: UInt8) {
-        if midiChannelRange.contains(channel) { sendRawMidiMessage(0xA0 + (channel - 1), note, value) }
+        guard midiChannelRange.contains(channel) else { return }
+        sendRawMidiMessage(0xA0 + (channel - 1), note, value)
     }
 
     public func sendControlChange(_ channel: UInt8, _ controller: UInt8, _ value: UInt8) {
-        if midiChannelRange.contains(channel) { sendRawMidiMessage(0xB0 + (channel - 1), controller, value) }
+        guard midiChannelRange.contains(channel) else { return }
+        sendRawMidiMessage(0xB0 + (channel - 1), controller, value)
     }
     
     public func sendProgramChange(_ channel: UInt8, _ program: UInt8) {
-        if midiChannelRange.contains(channel) {
-            var midiPacket = MIDIPacket()
-            midiPacket.timeStamp = 0
-            midiPacket.length = 2
-            midiPacket.data.0 = 0xC0 + (channel - 1)
-            midiPacket.data.1 = program
-            
-            var packetList = MIDIPacketList(numPackets: 1, packet: midiPacket)
-            MIDIReceived(midiOut, &packetList)
-        }
+        guard midiChannelRange.contains(channel) else { return }
+        sendRawMidiMessage(0xC0 + (channel - 1), program)
     }
     
     public func sendMonoAftertouch(_ channel: UInt8, _ value: UInt8) {
-        if midiChannelRange.contains(channel) {
-            var midiPacket = MIDIPacket()
-            midiPacket.timeStamp = 0
-            midiPacket.length = 2
-            midiPacket.data.0 = 0xD0 + (channel - 1)
-            midiPacket.data.1 = value
-            
-            var packetList = MIDIPacketList(numPackets: 1, packet: midiPacket)
-            MIDIReceived(midiOut, &packetList)
-        }
+        guard midiChannelRange.contains(channel) else { return }
+        sendRawMidiMessage(0xD0 + (channel - 1), value)
     }
     
     
     public func sendPitchbend(_ channel: UInt8, _ data1: UInt8, _ data2: UInt8) {
-        if midiChannelRange.contains(channel) { sendRawMidiMessage(0xE0 + (channel - 1), data1, data2) }
+        guard midiChannelRange.contains(channel) else { return }
+        sendRawMidiMessage(0xE0 + (channel - 1), data1, data2)
     }
     
     public func sendSysEx(_ bytes: [UInt8]) {
@@ -160,6 +148,10 @@ public class SBVirtualMidiDevice {
     
     
     
+    /// internal processing function. Converts the MIDIPacketList data into Midi messages and executes the corresponding delegate methods
+    /// - Parameters:
+    ///   - packetList: pointer to the midi data
+    ///   - whatever: I don't know, where this pointer is pointing to. The CoreMidi docs are not very clear about that...
     private func processIncomingMidi(_ packetList: UnsafePointer<MIDIPacketList>, _ whatever: UnsafeMutableRawPointer? ) {
         
         
@@ -168,7 +160,7 @@ public class SBVirtualMidiDevice {
         for _ in 1...packetList.pointee.numPackets
         {
             
-            // bytes mirror contains all the zero values in the ridiculous packet data tuple
+            // bytes mirror contains all the zero values in the packet data tuple ( = C-Array conversion)
             // so use the packet length to iterate.
             let bytes = Mirror(reflecting: packet.data).children
             var midiMsgString = ""

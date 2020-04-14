@@ -67,7 +67,7 @@ To send midi data, use the public send methods
     midi.sendSysEx([0xF0, 0x01, 0x02, 0x03, 0xF7])
     
 
-I recommend to use the Swift Packet Manager under Xcode 11 to embed the source code. But you can also copy the single .swift source file directly into your project.
+I recommend to use the Swift Packet Manager under Xcode 11 to embed the source code. But you can also copy the single .swift source file directly into your project. Minimum system requirements are macOS 10.12 and it has been written with Swift 5.1 but should be backward compatible to Swift 3 (I guess...).
 
 
 Have fun!
